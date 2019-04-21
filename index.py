@@ -261,7 +261,7 @@ while 1:
         sys.exit()
 
     last_good = good_count - now_good
-    line_input = input('还剩' + str(last_good) + '个空格\n(继续游戏输入行列:"x,y"/退出:"gg"): ')
+    line_input = input('雷区总数：' + str(mine_count) + ' ; 剩余安全区总数: ' + str(last_good) + ' \n(继续游戏输入行列:"x,y"/退出:"gg"): ')
     if line_input == 'gg':
         sys.exit()
 
