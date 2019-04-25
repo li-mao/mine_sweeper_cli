@@ -8,17 +8,17 @@ global langth  # 多长多宽
 global mine_count  # 多少雷
 global good_count  # 多少空格
 global now_good  # 已经打开的空格
-global mine_table  # 扫雷答案表
-global show_mine_table  # 扫雷已打开标记表
-global result_mine_table  # 上两张表的合成结果表
+global answer_table  # 扫雷答案表
+global flag_table  # 扫雷已打开标记表
+global result_table  # 上两张表的合成结果表
 
 langth = 8
 mine_count = 8
 good_count = langth * langth - mine_count
 now_good = 0
-mine_table = []
-show_mine_table = []
-result_mine_table = []
+answer_table = []
+flag_table = []
+result_table = []
 
 # 扫雷表格编号 [ [0,0],[0,1],[1,0],[1,1] ]
 def get_mine_number():
@@ -34,26 +34,26 @@ def get_mine_number():
     return mine_number
 
 # 指定雷区所在位置，初始化扫雷表
-def get_init_mine_table(init_mine_table, has_mine_table):
+def get_init_mine_table(init_table, has_mine_table):
     for index in range(len(has_mine_table)):
         # 获取雷区地址
         mine_i = has_mine_table[index][0]
         mine_j = has_mine_table[index][1]
         # 在扫雷初始表中设置雷区
-        new_i_line = init_mine_table[mine_i].copy()
+        new_i_line = init_table[mine_i].copy()
         new_i_line[mine_j] = '#'
-        init_mine_table[mine_i] = new_i_line
-    return init_mine_table
+        init_table[mine_i] = new_i_line
+    return init_table
 
 # 扫雷表各安全区周围雷区数量提示
-def prompt_mine(init_mine_table):
+def prompt_mine(init_table):
     global langth
     table_i = 0
     while (table_i < langth):
         table_j = 0
         while (table_j < langth):
             # 本格是雷区就跳过
-            if init_mine_table[table_i][table_j] == '#':
+            if init_table[table_i][table_j] == '#':
                 table_j = table_j + 1
                 continue
 
@@ -67,22 +67,22 @@ def prompt_mine(init_mine_table):
                         continue
                     find_i = table_i + around_i
                     find_j = table_j + around_j
-                    if (0 <= (find_i) < langth) and (0 <= (find_j) < langth) and (init_mine_table[find_i][find_j] == '#'):
+                    if (0 <= (find_i) < langth) and (0 <= (find_j) < langth) and (init_table[find_i][find_j] == '#'):
                         flag = flag + 1
                     around_j = around_j + 1
                 around_i = around_i + 1
 
             # 记录本格雷区数
-            new_i_line = init_mine_table[table_i].copy()
+            new_i_line = init_table[table_i].copy()
             new_i_line[table_j] = str(flag)
-            init_mine_table[table_i] = new_i_line
+            init_table[table_i] = new_i_line
             table_j = table_j + 1
 
         table_i = table_i + 1
-    return init_mine_table
+    return init_table
 
 # 已经发现的标记为'd'=>'discover'
-def check_input_addr(addr, show_mine_table, mine_table):
+def check_input_addr(addr, flag_table, answer_table):
     global langth
     global now_good
     i = addr[0]
@@ -92,25 +92,25 @@ def check_input_addr(addr, show_mine_table, mine_table):
         return -1
     if init_mine_table[i][j] == 'd':
         return 0
-    if mine_table[i][j] == '#':
+    if answer_table[i][j] == '#':
         return 2
 
     if mine_table[i][j] != '0':
-        new_i_line = show_mine_table[i].copy()
+        new_i_line = flag_table[i].copy()
         new_i_line[j] = 'd'
-        show_mine_table[i] = new_i_line
+        flag_table[i] = new_i_line
         now_good += 1
         return 1
     else:
-        new_i_line = show_mine_table[i].copy()
+        new_i_line = flag_table[i].copy()
         new_i_line[j] = 'd'
-        show_mine_table[i] = new_i_line
+        flag_table[i] = new_i_line
         now_good += 1
-        check_round([i, j], show_mine_table, mine_table)
+        check_round([i, j], flag_table, mine_table)
         return 1
 
 # 检查零区周围是否也为零区
-def check_round(addr, show_mine_table, mine_table):
+def check_round(addr, flag_table, answer_table):
     global langth
     global now_good
     table_i = addr[0]
@@ -127,68 +127,68 @@ def check_round(addr, show_mine_table, mine_table):
             #如果要检查的格从没打开
             find_i = table_i + around_i
             find_j = table_j + around_j
-            if (0 <= (find_i) < langth) and (0 <= (find_j) < langth) and (show_mine_table[find_i][find_j] != 'd'):
+            if (0 <= (find_i) < langth) and (0 <= (find_j) < langth) and (flag_table[find_i][find_j] != 'd'):
                 #要检查在格也是零区就递归
-                if mine_table[find_i][find_j] == '0':
+                if answer_table[find_i][find_j] == '0':
                     now_good += 1
                     #先标记它已经被打开
-                    change_show_mine_table(find_i, find_j, show_mine_table)
+                    change_show_mine_table(find_i, find_j, flag_table)
                     #递归
-                    check_round([find_i, find_j], show_mine_table, mine_table)
+                    check_round([find_i, find_j], flag_table, answer_table)
                 #要检查的格周围有雷，就仅标记被打开
-                elif mine_table[find_i][find_j] != '#':
+                elif answer_table[find_i][find_j] != '#':
                     now_good += 1
-                    change_show_mine_table(find_i, find_j, show_mine_table)
+                    change_show_mine_table(find_i, find_j, flag_table)
 
             around_j = around_j + 1
         around_i = around_i + 1
 
 # 标记该格已被打开
-def change_show_mine_table(i, j, show_mine_table):
-    new_i_line = show_mine_table[i].copy()
+def change_show_mine_table(i, j, flag_table):
+    new_i_line = flag_table[i].copy()
     new_i_line[j] = 'd'
-    show_mine_table[i] = new_i_line
+    flag_table[i] = new_i_line
 
 # 展示扫雷表 (用答案表和打开标记表，合成结果表)
-def print_show(mine_table, show_mine_table, result_mine_table):
-    for index_i in range(len(show_mine_table)):
-        for index_j in range(len(show_mine_table[index_i])):
-            if (show_mine_table[index_i][index_j] != '*') and (result_mine_table[index_i][index_j] == '*'):
-                new_i_line = result_mine_table[index_i].copy()
-                new_i_line[index_j] = mine_table[index_i][index_j]
-                result_mine_table[index_i] = new_i_line
+def print_show(answer_table, flag_table, result_table):
+    for index_i in range(len(flag_table)):
+        for index_j in range(len(flag_table[index_i])):
+            if (flag_table[index_i][index_j] != '*') and (result_table[index_i][index_j] == '*'):
+                new_i_line = result_table[index_i].copy()
+                new_i_line[index_j] = answer_table[index_i][index_j]
+                result_table[index_i] = new_i_line
 
 # 触雷时展示扫雷表，与上面函数不同,它多打开了全部的雷区
-def game_over_mine(mine_table, result_mine_table):
-    for index_i in range(len(result_mine_table)):
-        for index_j in range(len(result_mine_table[index_i])):
-            if (mine_table[index_i][index_j] == '#'):
-                new_i_line = result_mine_table[index_i].copy()
-                new_i_line[index_j] = mine_table[index_i][index_j]
-                result_mine_table[index_i] = new_i_line
+def game_over_mine(answer_table, result_table):
+    for index_i in range(len(result_table)):
+        for index_j in range(len(result_table[index_i])):
+            if (answer_table[index_i][index_j] == '#'):
+                new_i_line = result_table[index_i].copy()
+                new_i_line[index_j] = answer_table[index_i][index_j]
+                result_table[index_i] = new_i_line
 
 
 # 初始扫雷表
-init_mine_table = [['*'] * langth] * langth
+init_table = [['*'] * langth] * langth
 # 记录打开标记的扫雷图   已经发现的标记为'd'=>'discover'
-show_mine_table = init_mine_table.copy()
+flag_table = init_table.copy()
 # 结果表，这是用来合成结果后展示的
-result_mine_table = init_mine_table.copy()
+result_table = init_table.copy()
 # 生成雷区位置
 mine_number = get_mine_number()
 has_mine_table = random.sample(mine_number, mine_count)
 # 设置雷区标记,雷区标记为 "#"
-init_mine_table = get_init_mine_table(init_mine_table, has_mine_table)
+init_mine_table = get_init_mine_table(init_table, has_mine_table)
 # 雷区答案表,安全区周围雷区数
 mine_table = prompt_mine(init_mine_table)
 
 # 游戏开始
 while 1:
     # 屏幕上展示扫雷结果图
-    print_show(mine_table, show_mine_table, result_mine_table)
+    print_show(mine_table, flag_table, result_table)
     print('xy--0----1----2----3----4----5----6----7--')
     show_i = 0
-    for item in result_mine_table:
+    for item in result_table:
         print(show_i, item)
         print('------------------------------------------')
         show_i += 1
@@ -213,15 +213,15 @@ while 1:
     i, j = eval(line_input)
 
     # 打开用户指定的表格位置
-    result = check_input_addr([i, j], show_mine_table, mine_table)
+    result = check_input_addr([i, j], flag_table, mine_table)
     if result == -1:
         print('地址错误')
     elif result == 0:
         print('正在展示结果')
     elif result == 2:
         print('--------------game over-----------------')
-        game_over_mine(mine_table, result_mine_table)
-        for item in result_mine_table:
+        game_over_mine(mine_table, result_table)
+        for item in result_table:
             print(item)
             print('----------------------------------------')
         sys.exit()
