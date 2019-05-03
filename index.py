@@ -168,60 +168,61 @@ def game_over_mine(answer_table, result_table):
                 result_table[index_i] = new_i_line
 
 
-# 初始扫雷表
-init_table = [['*'] * table_langth] * table_langth
-# 记录打开标记的扫雷图   已经发现的标记为'd'=>'discover'
-flag_table = init_table.copy()
-# 结果表，这是用来合成结果后展示的
-result_table = init_table.copy()
-# 生成雷区位置
-mine_number = get_mine_number()
-has_mine_table = random.sample(mine_number, mine_count)
-# 设置雷区标记,雷区标记为 "#"
-init_table = get_init_mine_table(init_table, has_mine_table)
-# 雷区答案表,安全区周围雷区数
-answer_table = prompt_mine(init_table)
+if __name__ == "__main__":
+    # 初始扫雷表
+    init_table = [['*'] * table_langth] * table_langth
+    # 记录打开标记的扫雷图   已经发现的标记为'd'=>'discover'
+    flag_table = init_table.copy()
+    # 结果表，这是用来合成结果后展示的
+    result_table = init_table.copy()
+    # 生成雷区位置
+    mine_number = get_mine_number()
+    has_mine_table = random.sample(mine_number, mine_count)
+    # 设置雷区标记,雷区标记为 "#"
+    init_table = get_init_mine_table(init_table, has_mine_table)
+    # 雷区答案表,安全区周围雷区数
+    answer_table = prompt_mine(init_table)
 
-# 游戏开始
-while 1:
-    # 屏幕上展示扫雷结果图
-    print_show(answer_table, flag_table, result_table)
-    print('xy--0----1----2----3----4----5----6----7--')
-    show_i = 0
-    for item in result_table:
-        print(show_i, item)
-        print('------------------------------------------')
-        show_i += 1
-        if not (0 <= show_i < table_langth):
-            show_i = 0
-
-    # 如果全部安全区都打开，就结束
-    if now_good == good_count:
-        print('==============success!!!================')
-        sys.exit()
-
-    # 提示扫雷信息，并接收用户输入
-    last_good = good_count - now_good
-    line_input = input('雷区总数：' + str(mine_count) + ' ; 剩余安全区总数: ' + str(last_good) + ' \n(继续游戏输入行列:"x,y"/退出:"gg"): ')
-    # 用户要求结束
-    if line_input == 'gg':
-        sys.exit()
-    # 用户继续输入, 先判断输入格式
-    if not (re.match(r'^\d+,\d+', line_input)):
-        print('输入格式错误，请重试')
-        continue
-    i, j = eval(line_input)
-
-    # 打开用户指定的表格位置
-    result = check_input_addr([i, j], flag_table, answer_table)
-    if result == -1:
-        print('地址错误')
-    elif result == 0:
-        print('正在展示结果')
-    elif result == 2:
-        print('--------------game over-----------------')
-        game_over_mine(answer_table, result_table)
+    # 游戏开始
+    while 1:
+        # 屏幕上展示扫雷结果图
+        print_show(answer_table, flag_table, result_table)
+        print('xy--0----1----2----3----4----5----6----7--')
+        show_i = 0
         for item in result_table:
-            print(item)
-            print('----------------------------------------')
-        sys.exit()
+            print(show_i, item)
+            print('------------------------------------------')
+            show_i += 1
+            if not (0 <= show_i < table_langth):
+                show_i = 0
+
+        # 如果全部安全区都打开，就结束
+        if now_good == good_count:
+            print('==============success!!!================')
+            sys.exit()
+
+        # 提示扫雷信息，并接收用户输入
+        last_good = good_count - now_good
+        line_input = input('雷区总数：' + str(mine_count) + ' ; 剩余安全区总数: ' + str(last_good) + ' \n(继续游戏输入行列:"x,y"/退出:"gg"): ')
+        # 用户要求结束
+        if line_input == 'gg':
+            sys.exit()
+        # 用户继续输入, 先判断输入格式
+        if not (re.match(r'^\d+,\d+', line_input)):
+            print('输入格式错误，请重试')
+            continue
+        i, j = eval(line_input)
+
+        # 打开用户指定的表格位置
+        result = check_input_addr([i, j], flag_table, answer_table)
+        if result == -1:
+            print('地址错误')
+        elif result == 0:
+            print('正在展示结果')
+        elif result == 2:
+            print('--------------game over-----------------')
+            game_over_mine(answer_table, result_table)
+            for item in result_table:
+                print(item)
+                print('----------------------------------------')
+            sys.exit()
