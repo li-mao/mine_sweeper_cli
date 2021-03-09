@@ -21,7 +21,7 @@ by python3
 ```
 #### 试玩展示：
 ```
-[limao@limao-pc mine_sweeping_command_line]$ python index.py 
+[limao@limao-pc mine_sweeper_cli]$ python index.py 
 xy--0----1----2----3----4----5----6----7--
 0 ['*', '*', '*', '*', '*', '*', '*', '*']
 ------------------------------------------
@@ -211,12 +211,12 @@ xy--0----1----2----3----4----5----6----7--
 7 ['2', '*', '3', '3', '2', '1', '0', '0']
 ------------------------------------------
 ==============success!!!================
-[limao@limao-pc mine_sweeping_command_line]$ 
+[limao@limao-pc mine_sweeper_cli]$ 
 ```
 
 ##### 退出:
 ```
-[limao@limao-pc mine_sweeping_command_line]$ python index.py 
+[limao@limao-pc mine_sweeper_cli]$ python index.py 
 xy--0----1----2----3----4----5----6----7--
 0 ['*', '*', '*', '*', '*', '*', '*', '*']
 ------------------------------------------
@@ -236,14 +236,14 @@ xy--0----1----2----3----4----5----6----7--
 ------------------------------------------
 雷区总数：8 ; 剩余安全区总数: 56 
 (继续游戏输入行列:"x,y"/退出:"gg"): gg
-[limao@limao-pc mine_sweeping_command_line]$ 
+[limao@limao-pc mine_sweeper_cli]$ 
 ```
 
 
 
 ##### 失败:
 ```
-[limao@limao-pc mine_sweeping_command_line]$ python index.py 
+[limao@limao-pc mine_sweeper_cli]$ python index.py 
 xy--0----1----2----3----4----5----6----7--
 0 ['*', '*', '*', '*', '*', '*', '*', '*']
 ------------------------------------------
@@ -280,6 +280,6 @@ xy--0----1----2----3----4----5----6----7--
 ----------------------------------------
 ['*', '*', '*', '*', '*', '*', '*', '*']
 ----------------------------------------
-[limao@limao-pc mine_sweeping_command_line]$ 
+[limao@limao-pc mine_sweeper_cli]$ 
 
 ```
