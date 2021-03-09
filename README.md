@@ -1,6 +1,6 @@
 # 命令行版扫雷
-mine_sweeping_command_line    
-by linux/python
+mine_sweeper_cli    
+by python3
 
 #### 简介：
 ```
