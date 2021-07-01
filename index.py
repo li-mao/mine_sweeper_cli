@@ -5,6 +5,7 @@ import sys
 import re
 import copy
 
+
 class MineTable:
     tableLength = 8  # 多长多宽
     mineCount = 8  # 多少雷
