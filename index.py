@@ -3,7 +3,7 @@
 import random
 import sys
 import re
-
+import copy
 
 class MineTable:
     tableLength = 8  # 多长多宽
@@ -20,13 +20,13 @@ class MineTable:
         # 多少空格
         self.allGoodCount = self.tableLength * self.tableLength - self.mineCount
         # 初始扫雷表
-        initTable = [[self.cover] * self.tableLength] * self.tableLength
+        initTable = [[self.cover for _ in range(self.tableLength)] for _ in range(self.tableLength)]
         # 答案表
-        self.answerTable = initTable.copy()
+        self.answerTable = copy.deepcopy(initTable)
         # 记录打开标记的扫雷图   已经发现的标记为'd'=>'discover
-        self.flagTable = initTable.copy()
+        self.flagTable = copy.deepcopy(initTable)
         # 结果表，这是用来合成结果后展示的
-        self.resultTable = initTable.copy()
+        self.resultTable = copy.deepcopy(initTable)
         # 设置雷区标记,雷区标记为 "#"
         self.getAnswerTable()
         # 雷区答案表,安全区周围雷区数
@@ -42,7 +42,8 @@ class MineTable:
 
     # 设置雷区标记,雷区标记为 "#"
     def getAnswerTable(self):
-        for address in random.sample(self.getTableAddress(), self.mineCount):
+        mines = random.sample(self.getTableAddress(), self.mineCount)
+        for address in mines:
             i = address[0]
             j = address[1]
             # 在扫雷初始表中设置雷区
@@ -74,7 +75,8 @@ class MineTable:
     def getNowData(self):
         for i in range(self.tableLength):
             for j in range(self.tableLength):
-                if self.flagTable[i][j] != self.cover:
+                # 将已打开的
+                if self.flagTable[i][j] == 'd':
                     self.resultTable[i][j] = self.answerTable[i][j]
 
     def printShow(self):
