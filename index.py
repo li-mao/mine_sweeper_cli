@@ -4,21 +4,13 @@ import random
 import sys
 import re
 
-global table_length  # 多长多宽
-global mine_count  # 多少雷
-global good_count  # 多少空格
-global now_good  # 已经打开的空格
-global answer_table  # 扫雷答案表
-global flag_table  # 扫雷已打开标记表
-global result_table  # 上两张表的合成结果表
-
-table_length = 8
-mine_count = 8
-good_count = table_length * table_length - mine_count
-now_good = 0
-answer_table = []
-flag_table = []
-result_table = []
+table_length = 8  # 多长多宽
+mine_count = 8  # 多少雷
+good_count = table_length * table_length - mine_count  # 多少空格
+now_good = 0  # 已经打开的空格
+answer_table = []  # 扫雷答案表
+flag_table = []   # 扫雷已打开标记表
+result_table = []   # 上两张表的合成结果表
 
 
 # 扫雷表格编号 [ [0,0],[0,1],[1,0],[1,1] ]
@@ -26,9 +18,9 @@ def get_mine_number():
     global table_length
     i = 0
     mine_number = []
-    while (i < table_length):
+    while i < table_length:
         j = 0
-        while (j < table_length):
+        while j < table_length:
             mine_number.append([i, j])
             j += 1
         i += 1
@@ -52,9 +44,9 @@ def get_init_mine_table(init_table, has_mine_table):
 def prompt_mine(init_table):
     global table_length
     table_i = 0
-    while (table_i < table_length):
+    while table_i < table_length:
         table_j = 0
-        while (table_j < table_length):
+        while table_j < table_length:
             # 本格是雷区就跳过
             if init_table[table_i][table_j] == '#':
                 table_j = table_j + 1
@@ -62,15 +54,15 @@ def prompt_mine(init_table):
 
             flag = 0
             around_i = -1
-            while (around_i <= 1):
+            while around_i <= 1:
                 around_j = -1
-                while (around_j <= 1):
+                while around_j <= 1:
                     if (around_i == 0) and (around_j == 0):
                         around_j = around_j + 1
                         continue
                     find_i = table_i + around_i
                     find_j = table_j + around_j
-                    if (0 <= (find_i) < table_length) and (0 <= (find_j) < table_length) and (
+                    if (0 <= find_i < table_length) and (0 <= find_j < table_length) and (
                             init_table[find_i][find_j] == '#'):
                         flag = flag + 1
                     around_j = around_j + 1
@@ -87,11 +79,11 @@ def prompt_mine(init_table):
 
 
 # 已经发现的标记为'd'=>'discover'
-def check_input_addr(addr, flag_table, answer_table):
+def check_input_address(address, flag_table, answer_table):
     global table_length
     global now_good
-    i = addr[0]
-    j = addr[1]
+    i = address[0]
+    j = address[1]
 
     if (not (0 <= i < table_length)) or (not (0 <= j < table_length)):
         return -1
@@ -116,16 +108,16 @@ def check_input_addr(addr, flag_table, answer_table):
 
 
 # 检查零区周围是否也为零区
-def check_round(addr, flag_table, answer_table):
+def check_round(address: list, flag_table: list, answer_table: list):
     global table_length
     global now_good
-    table_i = addr[0]
-    table_j = addr[1]
+    table_i = address[0]
+    table_j = address[1]
     # 检查周围8个格
     around_i = -1
-    while (around_i <= 1):
+    while around_i <= 1:
         around_j = -1
-        while (around_j <= 1):
+        while around_j <= 1:
             # 不用检查自己
             if (around_i == 0) and (around_j == 0):
                 around_j = around_j + 1
@@ -133,7 +125,7 @@ def check_round(addr, flag_table, answer_table):
             # 如果要检查的格从没打开
             find_i = table_i + around_i
             find_j = table_j + around_j
-            if (0 <= (find_i) < table_length) and (0 <= (find_j) < table_length) and (
+            if (0 <= find_i < table_length) and (0 <= find_j < table_length) and (
                     flag_table[find_i][find_j] != 'd'):
                 # 要检查在格也是零区就递归
                 if answer_table[find_i][find_j] == '0':
@@ -172,7 +164,7 @@ def print_show(answer_table, flag_table, result_table):
 def game_over_mine(answer_table, result_table):
     for index_i in range(len(result_table)):
         for index_j in range(len(result_table[index_i])):
-            if (answer_table[index_i][index_j] == '#'):
+            if answer_table[index_i][index_j] == '#':
                 new_i_line = result_table[index_i].copy()
                 new_i_line[index_j] = answer_table[index_i][index_j]
                 result_table[index_i] = new_i_line
@@ -225,7 +217,7 @@ if __name__ == "__main__":
         i, j = eval(line_input)
 
         # 打开用户指定的表格位置
-        result = check_input_addr([i, j], flag_table, answer_table)
+        result = check_input_address([i, j], flag_table, answer_table)
         if result == -1:
             print('地址错误')
         elif result == 0:
