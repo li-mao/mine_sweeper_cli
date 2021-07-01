@@ -6,8 +6,9 @@ import re
 
 table_length = 8  # 多长多宽
 mine_count = 8  # 多少雷
-good_count = table_length * table_length - mine_count  # 多少空格
 now_good = 0  # 已经打开的空格
+no_open = '*'
+sign = '#'
 answer_table = []  # 扫雷答案表
 flag_table = []   # 扫雷已打开标记表
 result_table = []   # 上两张表的合成结果表
@@ -35,7 +36,7 @@ def get_init_mine_table(init_table, has_mine_table):
         mine_j = has_mine_table[index][1]
         # 在扫雷初始表中设置雷区
         new_i_line = init_table[mine_i].copy()
-        new_i_line[mine_j] = '#'
+        new_i_line[mine_j] = sign
         init_table[mine_i] = new_i_line
     return init_table
 
@@ -48,7 +49,7 @@ def prompt_mine(init_table):
         table_j = 0
         while table_j < table_length:
             # 本格是雷区就跳过
-            if init_table[table_i][table_j] == '#':
+            if init_table[table_i][table_j] == sign:
                 table_j = table_j + 1
                 continue
 
@@ -63,7 +64,7 @@ def prompt_mine(init_table):
                     find_i = table_i + around_i
                     find_j = table_j + around_j
                     if (0 <= find_i < table_length) and (0 <= find_j < table_length) and (
-                            init_table[find_i][find_j] == '#'):
+                            init_table[find_i][find_j] == sign):
                         flag = flag + 1
                     around_j = around_j + 1
                 around_i = around_i + 1
@@ -89,7 +90,7 @@ def check_input_address(address, flag_table, answer_table):
         return -1
     if init_table[i][j] == 'd':
         return 0
-    if answer_table[i][j] == '#':
+    if answer_table[i][j] == sign:
         return 2
 
     if answer_table[i][j] != '0':
@@ -135,7 +136,7 @@ def check_round(address: list, flag_table: list, answer_table: list):
                     # 递归
                     check_round([find_i, find_j], flag_table, answer_table)
                 # 要检查的格周围有雷，就仅标记被打开
-                elif answer_table[find_i][find_j] != '#':
+                elif answer_table[find_i][find_j] != sign:
                     now_good += 1
                     change_show_mine_table(find_i, find_j, flag_table)
 
@@ -154,7 +155,7 @@ def change_show_mine_table(i, j, flag_table):
 def print_show(answer_table, flag_table, result_table):
     for index_i in range(len(flag_table)):
         for index_j in range(len(flag_table[index_i])):
-            if (flag_table[index_i][index_j] != '*') and (result_table[index_i][index_j] == '*'):
+            if (flag_table[index_i][index_j] != no_open) and (result_table[index_i][index_j] == no_open):
                 new_i_line = result_table[index_i].copy()
                 new_i_line[index_j] = answer_table[index_i][index_j]
                 result_table[index_i] = new_i_line
@@ -164,7 +165,7 @@ def print_show(answer_table, flag_table, result_table):
 def game_over_mine(answer_table, result_table):
     for index_i in range(len(result_table)):
         for index_j in range(len(result_table[index_i])):
-            if answer_table[index_i][index_j] == '#':
+            if answer_table[index_i][index_j] == sign:
                 new_i_line = result_table[index_i].copy()
                 new_i_line[index_j] = answer_table[index_i][index_j]
                 result_table[index_i] = new_i_line
@@ -172,7 +173,9 @@ def game_over_mine(answer_table, result_table):
 
 if __name__ == "__main__":
     # 初始扫雷表
-    init_table = [['*'] * table_length] * table_length
+    init_table = [[no_open] * table_length] * table_length
+    # 多少空格
+    good_count = table_length * table_length - mine_count
     # 记录打开标记的扫雷图   已经发现的标记为'd'=>'discover'
     flag_table = init_table.copy()
     # 结果表，这是用来合成结果后展示的
