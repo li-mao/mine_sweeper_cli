@@ -17,7 +17,7 @@ typedef struct tagMineObj {
     int (* getXY)(struct tagMineObj* self, int x, int y);
 }mineObj;
 
-void makeRandMine(mineCell* mineMap, int mapLength, int mineMax, int current);
+void makeRandMine(mineObj* self, int mapLength, int mineMax, int current);
 void showInner(mineObj* self);
 void showOuter(mineObj* self);
 void showOpen(mineObj* self);

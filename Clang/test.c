@@ -4,7 +4,7 @@
 int main(){
     mineObj* myMine = init(4,4);
 
-    openXY(myMine,0,0);
+    myMine->openXY(myMine,0,0);
     printf("\n open: \n");
     myMine->showOpen(myMine);
     printf("\n test: \n");

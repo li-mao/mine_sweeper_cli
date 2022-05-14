@@ -3,7 +3,6 @@
 #include <time.h>
 #include "mineObj.h"
 
-
 /**
  * @brief 初始化 mineObj
  * 
@@ -18,8 +17,6 @@ mineObj* init(int x, int y){
         (mineMap+i)->outer = '*'; // *: 未打开， O: 已打开
         (mineMap+i)->inner = ' '; // ' ': 周围无雷， 1-5: 周围雷数， M: 雷
     }
-    makeRandMine(mineMap, x*y, x, 0);
-
     // 申请mineObj对象
     mineObj* myMineObj = (mineObj*)malloc(sizeof(mineObj));
     myMineObj->mineMap = mineMap;
@@ -33,6 +30,8 @@ mineObj* init(int x, int y){
     myMineObj->openXY = openXY;
     myMineObj->getXY = getXY;
 
+    makeRandMine(myMineObj, x*y, x, 0);
+
     return myMineObj;
 }
 
@@ -43,20 +42,20 @@ mineObj* init(int x, int y){
   * @param mineMax
   * @param current
   */
-void makeRandMine(mineCell* mineMap, int mapLength, int mineMax, int current) {
+void makeRandMine(mineObj* self, int mapLength, int mineMax, int current) {
     time_t t;
     srand((unsigned) time(&t) + current);
     int r = rand() % mapLength;
 
-    if ((mineMap+r)->inner != 'M') {
-        (mineMap+r)->inner = 'M';
+    if ((self->mineMap+r)->inner != 'M') {
+        (self->mineMap+r)->inner = 'M';
         current++; 
         if (current >= mineMax) {
             return;
         }
     }
 
-    return makeRandMine(mineMap, mapLength, mineMax, current);
+    return makeRandMine(self, mapLength, mineMax, current);
 }
 
 /**
@@ -67,8 +66,23 @@ void makeRandMine(mineCell* mineMap, int mapLength, int mineMax, int current) {
  * @return  0 1
  */
 int getXY(mineObj* self, int x, int y){
+    if( x < 0 || x > self->x){
+        return 0;
+    }
+    if( y < 0 || y > self->y){
+        return 0;
+    }
     return (self->mineMap + (self->x * x + y))->inner == 'M';
 }
+
+//void cellCount(mineObj){
+//
+//}
+//
+//void openRound(mineObj* self, int x, int y){
+//
+//}
+
 
 
 /**
@@ -134,7 +148,4 @@ void openXY(mineObj* self, int x, int y){
     (self->mineMap + (self->x * x + y))->outer = 'O';
 }
 
-void openRound(mineObj* self, int x, int y){
-
-}
 
