@@ -13,37 +13,37 @@
  */
 mineObj* init(int x, int y){
     // 申请mine数组
-    mineShow* minePoint = (mineShow*)malloc(sizeof(mineShow)*x*y);
+    mineCell* mineMap = (mineCell*)malloc(sizeof(mineCell)*x*y);
     for(int i=0; i<x*y; i++){
-        (minePoint+i)->outer = '*';
-        (minePoint+i)->inner = ' ';
+        (mineMap+i)->outer = '*'; // *: 未打开， O: 已打开
+        (mineMap+i)->inner = ' '; // ' ': 周围无雷， 1-5: 周围雷数， M: 雷
     }
-    mkRandArr(minePoint, x*y, x, 0);
+    makeRandMine(mineMap, x*y, x, 0);
 
     // 申请mineObj对象
-    mineObj* myMine = (mineObj*)malloc(sizeof(mineObj));
-    myMine->mine = minePoint;
-    myMine->x = x;
-    myMine->y = y;
-    // myMine->set = set;
-    myMine->showInner = showInner;
-    myMine->showOuter = showOuter;
-    myMine->showOpen = showOpen;
-    myMine->showFail = showFail;
-    myMine->showTest = showTest;
+    mineObj* myMineObj = (mineObj*)malloc(sizeof(mineObj));
+    myMineObj->mineMap = mineMap;
+    myMineObj->x = x;
+    myMineObj->y = y;
+    myMineObj->showInner = showInner;
+    myMineObj->showOuter = showOuter;
+    myMineObj->showOpen = showOpen;
+    myMineObj->showFail = showFail;
+    myMineObj->showTest = showTest;
+    myMineObj->openXY = openXY;
+    myMineObj->getXY = getXY;
 
-    return myMine;
+    return myMineObj;
 }
 
-/**
- * @brief 随机雷区
- * 
- * @param mineMap 
- * @param mapLength 
- * @param mineMax 
- * @param current 
- */
-void mkRandArr(mineShow* mineMap, int mapLength, int mineMax, int current) {
+ /**
+  * 生成雷地址
+  * @param mineMap
+  * @param mapLength
+  * @param mineMax
+  * @param current
+  */
+void makeRandMine(mineCell* mineMap, int mapLength, int mineMax, int current) {
     time_t t;
     srand((unsigned) time(&t) + current);
     int r = rand() % mapLength;
@@ -56,8 +56,20 @@ void mkRandArr(mineShow* mineMap, int mapLength, int mineMax, int current) {
         }
     }
 
-    return mkRandArr(mineMap, mapLength, mineMax, current);
+    return makeRandMine(mineMap, mapLength, mineMax, current);
 }
+
+/**
+ * 该地方是否有雷
+ * @param self
+ * @param x
+ * @param y
+ * @return  0 1
+ */
+int getXY(mineObj* self, int x, int y){
+    return (self->mineMap + (self->x * x + y))->inner == 'M';
+}
+
 
 /**
  * @brief 展示底层地图
@@ -69,7 +81,7 @@ void showInner(mineObj* self){
         if(!(i % self->x )){
             printf("\n");
         }
-        printf(" %c", (self->mine + i)->inner);
+        printf(" %c", (self->mineMap + i)->inner);
     }
 }
 
@@ -83,7 +95,7 @@ void showOuter(mineObj* self){
         if(!(i % self->x )){
             printf("\n");
         }
-        printf(" %c", (self->mine + i)->outer);
+        printf(" %c", (self->mineMap + i)->outer);
     }
 }
 
@@ -92,7 +104,7 @@ void showOpen(mineObj* self){
         if(!(i % self->x )){
             printf("\n");
         }
-        printf(" %c", (self->mine + i)->outer == '*' ? (self->mine + i)->outer: (self->mine + i)->inner);
+        printf(" %c", (self->mineMap + i)->outer == '*' ? (self->mineMap + i)->outer: (self->mineMap + i)->inner);
     }
 }
 
@@ -101,11 +113,11 @@ void showFail(mineObj* self){
         if(!(i % self->x )){
             printf("\n");
         }
-        printf(" %c", (self->mine + i)->inner == 'M'
+        printf(" %c", (self->mineMap + i)->inner == 'M'
                         ? 'm'
-                        : (self->mine + i)->outer == '*'
-                            ? (self->mine + i)->outer
-                            : (self->mine + i)->inner );
+                        : (self->mineMap + i)->outer == '*'
+                            ? (self->mineMap + i)->outer
+                            : (self->mineMap + i)->inner );
     }
 }
 
@@ -114,6 +126,15 @@ void showTest(mineObj* self){
         if(!(i % self->x )){
             printf("\n");
         }
-        printf(" %c", (self->mine + i)->inner == 'M' ? (self->mine + i)->inner: (self->mine + i)->outer);
+        printf(" %c", (self->mineMap + i)->inner == 'M' ? (self->mineMap + i)->inner: (self->mineMap + i)->outer);
     }
 }
+
+void openXY(mineObj* self, int x, int y){
+    (self->mineMap + (self->x * x + y))->outer = 'O';
+}
+
+void openRound(mineObj* self, int x, int y){
+
+}
+
