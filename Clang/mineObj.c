@@ -28,6 +28,10 @@ mineObj* init(int x, int y){
     // myMine->set = set;
     myMine->showInner = showInner;
     myMine->showOuter = showOuter;
+    myMine->showOpen = showOpen;
+    myMine->showFail = showFail;
+    myMine->showTest = showTest;
+
     return myMine;
 }
 
@@ -83,3 +87,33 @@ void showOuter(mineObj* self){
     }
 }
 
+void showOpen(mineObj* self){
+    for(int i=0; i< self->x * self->y; i++){
+        if(!(i % self->x )){
+            printf("\n");
+        }
+        printf(" %c", (self->mine + i)->outer == '*' ? (self->mine + i)->outer: (self->mine + i)->inner);
+    }
+}
+
+void showFail(mineObj* self){
+    for(int i=0; i< self->x * self->y; i++){
+        if(!(i % self->x )){
+            printf("\n");
+        }
+        printf(" %c", (self->mine + i)->inner == 'M'
+                        ? 'm'
+                        : (self->mine + i)->outer == '*'
+                            ? (self->mine + i)->outer
+                            : (self->mine + i)->inner );
+    }
+}
+
+void showTest(mineObj* self){
+    for(int i=0; i< self->x * self->y; i++){
+        if(!(i % self->x )){
+            printf("\n");
+        }
+        printf(" %c", (self->mine + i)->inner == 'M' ? (self->mine + i)->inner: (self->mine + i)->outer);
+    }
+}
