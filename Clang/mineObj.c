@@ -22,6 +22,7 @@ mineObj* init(int x, int y){
     myMineObj->mineMap = mineMap;
     myMineObj->x = x;
     myMineObj->y = y;
+    myMineObj->makeRandMine = makeRandMine;
     myMineObj->showInner = showInner;
     myMineObj->showOuter = showOuter;
     myMineObj->showOpen = showOpen;
@@ -30,7 +31,7 @@ mineObj* init(int x, int y){
     myMineObj->openXY = openXY;
     myMineObj->getXY = getXY;
 
-    makeRandMine(myMineObj, x*y, x, 0);
+    myMineObj->makeRandMine(myMineObj, x*y, x, 0);
 
     return myMineObj;
 }

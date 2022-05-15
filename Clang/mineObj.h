@@ -7,7 +7,7 @@ typedef struct tagMineObj {
     mineCell* mineMap;
     int x;
     int y;
-    // void (* set)(mineObj self, int x, int y, char sign);
+    void (* makeRandMine)(struct tagMineObj* self, int mapLength, int mineMax, int current);
     void (* showInner)(struct tagMineObj* self);
     void (* showOuter)(struct tagMineObj* self);
     void (* showOpen)(struct tagMineObj* self);
