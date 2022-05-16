@@ -30,8 +30,11 @@ mineObj* init(int x, int y){
     myMineObj->showTest = showTest;
     myMineObj->openXY = openXY;
     myMineObj->getXY = getXY;
+    myMineObj->cellCountRound = cellCountRound;
+    myMineObj->cellHint = cellHint;
 
     myMineObj->makeRandMine(myMineObj, x*y, x, 0);
+    myMineObj->cellHint(myMineObj);
 
     return myMineObj;
 }
@@ -73,13 +76,44 @@ int getXY(mineObj* self, int x, int y){
     if( y < 0 || y > self->y){
         return 0;
     }
-    return (self->mineMap + (self->x * x + y))->inner == 'M';
+    return (self->mineMap + (self->y * x + y))->inner == 'M';
 }
 
-//void cellCount(mineObj){
-//
-//}
-//
+char cellCountRound(mineObj* self, int x, int y){
+    int count = 0;
+    char countChar[2];
+
+    if(x-1 >= 0){
+        count += y-1 >=0 ?       (self->mineMap + self->y * (x-1) + y-1)->inner == 'M' : 0;
+        count +=                 (self->mineMap + self->y * (x-1) + y)->inner == 'M';
+        count += y+1 < self->y ? (self->mineMap + self->y * (x-1) + y+1)->inner == 'M' : 0;
+    }
+
+    count += y-1 >= 0 ?      (self->mineMap + self->y * (x) + y-1)->inner == 'M' : 0;
+    count += y+1 < self->y ? (self->mineMap + self->y * (x) + y+1)->inner == 'M' : 0;
+
+    if(x+1 < self->x){
+        count += y-1 >= 0 ?      (self->mineMap + self->y * (x+1) + y-1)->inner == 'M' : 0;
+        count +=                 (self->mineMap + self->y * (x+1) + y)->inner == 'M';
+        count += y+1 < self->y ? (self->mineMap + self->y * (x+1) + y+1)->inner == 'M': 0;
+
+    }
+
+    sprintf(countChar, "%d" , count);
+    return countChar[0];
+}
+
+void cellHint(mineObj* self){
+    for(int x= 0; x < self->x; x++){
+        for(int y=0; y < self->y; y++){
+            if((self->mineMap + (self->y * x + y))->inner != 'M'){
+                char result =  self->cellCountRound(self, x, y);
+                (self->mineMap + (self->y * x + y))-> inner = result;
+            }
+        }
+    }
+}
+
 //void openRound(mineObj* self, int x, int y){
 //
 //}
@@ -146,7 +180,7 @@ void showTest(mineObj* self){
 }
 
 void openXY(mineObj* self, int x, int y){
-    (self->mineMap + (self->x * x + y))->outer = 'O';
+    (self->mineMap + (self->y * x + y))->outer = 'O';
 }
 
 

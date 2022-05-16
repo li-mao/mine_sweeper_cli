@@ -5,8 +5,8 @@ typedef struct tagMineCell {
 
 typedef struct tagMineObj {
     mineCell* mineMap;
-    int x;
-    int y;
+    int x;  // 多少行
+    int y;  // 每行多少个
     void (* makeRandMine)(struct tagMineObj* self, int mapLength, int mineMax, int current);
     void (* showInner)(struct tagMineObj* self);
     void (* showOuter)(struct tagMineObj* self);
@@ -15,6 +15,8 @@ typedef struct tagMineObj {
     void (* showTest)(struct tagMineObj* self);
     void (* openXY)(struct tagMineObj* self, int x, int y);
     int (* getXY)(struct tagMineObj* self, int x, int y);
+    char (* cellCountRound)(struct tagMineObj* self, int x, int y);
+    void (* cellHint)(struct tagMineObj* self);
 }mineObj;
 
 void makeRandMine(mineObj* self, int mapLength, int mineMax, int current);
@@ -25,5 +27,7 @@ void showFail(mineObj* self);
 void showTest(mineObj* self);
 void openXY(mineObj* self, int x, int y);
 int getXY(mineObj* self, int x, int y);
+char cellCountRound(mineObj* self, int x, int y);
+void cellHint(mineObj* self);
 
 extern mineObj* init(int x, int y);

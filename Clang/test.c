@@ -11,7 +11,7 @@ int main(){
     myMine->showTest(myMine);
 
 //    myMine->showOuter(myMine);
-//    printf("\n");
-//    myMine->showInner(myMine);
+    printf("\n showInner \n");
+    myMine->showInner(myMine);
     return 0;
 }
