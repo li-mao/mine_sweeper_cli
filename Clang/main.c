@@ -6,7 +6,7 @@ int main(){
 
     int x = 0, y = 0, result = 1;
     while(1){
-        printf("plase entry x y:\n");
+        printf("please entry x y:\n");
         scanf("%d %d", &x, &y);
         result = myMine->openXY(myMine,x,y,1);
         if(result){
