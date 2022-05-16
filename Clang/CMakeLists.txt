@@ -4,4 +4,4 @@ project(mine_sweeper_cli)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(mine_sweeper_cli test.c mineObj.c)
+add_executable(mine_sweeper_cli main.c mineObj.c)
