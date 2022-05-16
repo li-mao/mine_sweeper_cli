@@ -102,6 +102,10 @@ char cellCountRound(mineObj* self, int x, int y){
     return countChar[0];
 }
 
+/**
+ * 给每个格子统计周边的地雷数量
+ * @param self
+ */
 void cellHint(mineObj* self){
     for(int x= 0; x < self->x; x++){
         for(int y=0; y < self->y; y++){
@@ -172,10 +176,21 @@ void showTest(mineObj* self){
     }
 }
 
-void openXY(mineObj* self, int x, int y, int manual){
+/**
+ * 打开格子，（默认手动打开，当格子的数字是0时，会自动打开周围的格子，如果还有格子的数字是0，该格子就标记已打开）
+ * @param self
+ * @param x
+ * @param y
+ * @param manual
+ * @return 1：正常返回，0：触发地雷
+ */
+int openXY(mineObj* self, int x, int y, int manual){
     if(manual){
         if( (self->mineMap + (self->y * x + y))->outer != 'O' ) {
             (self->mineMap + (self->y * x + y))->outer = 'O';
+        }
+        if((self->mineMap + (self->y * x + y))->inner == 'M' ){
+            return 0;
         }
     }else{
         if( (self->mineMap + (self->y * x + y))->inner == '0' ) {
@@ -216,7 +231,7 @@ void openXY(mineObj* self, int x, int y, int manual){
         }
     }
 
-    return;
+    return 1;
 }
 
 

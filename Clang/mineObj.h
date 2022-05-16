@@ -13,7 +13,7 @@ typedef struct tagMineObj {
     void (* showOpen)(struct tagMineObj* self);
     void (* showFail)(struct tagMineObj* self);
     void (* showTest)(struct tagMineObj* self);
-    void (* openXY)(struct tagMineObj* self, int x, int y, int manual);
+    int (* openXY)(struct tagMineObj* self, int x, int y, int manual);
     int (* getXY)(struct tagMineObj* self, int x, int y);
     char (* cellCountRound)(struct tagMineObj* self, int x, int y);
     void (* cellHint)(struct tagMineObj* self);
@@ -25,7 +25,7 @@ void showOuter(mineObj* self);
 void showOpen(mineObj* self);
 void showFail(mineObj* self);
 void showTest(mineObj* self);
-void openXY(mineObj* self, int x, int y, int manual);
+int openXY(mineObj* self, int x, int y, int manual);
 int getXY(mineObj* self, int x, int y);
 char cellCountRound(mineObj* self, int x, int y);
 void cellHint(mineObj* self);

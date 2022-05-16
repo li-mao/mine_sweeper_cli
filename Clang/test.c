@@ -2,16 +2,21 @@
 #include "mineObj.h"
 
 int main(){
-    mineObj* myMine = init(8,8);
+    mineObj* myMine = init(16,16);
 
-    myMine->openXY(myMine,0,0,1);
-    printf("\n open: \n");
-    myMine->showOpen(myMine);
-    printf("\n test: \n");
-    myMine->showTest(myMine);
-
-//    myMine->showOuter(myMine);
-    printf("\n showInner \n");
-    myMine->showInner(myMine);
+    int x = 0, y = 0, result = 1;
+    while(1){
+        printf("plase entry x y:\n");
+        scanf("%d %d", &x, &y);
+        result = myMine->openXY(myMine,x,y,1);
+        if(result){
+            myMine->showOpen(myMine);
+            printf("\n");
+        }else{
+            myMine->showFail(myMine);
+            printf("\ngame over!!!");
+            break;
+        }
+    }
     return 0;
 }
