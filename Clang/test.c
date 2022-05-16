@@ -2,9 +2,9 @@
 #include "mineObj.h"
 
 int main(){
-    mineObj* myMine = init(4,4);
+    mineObj* myMine = init(8,8);
 
-    myMine->openXY(myMine,0,0);
+    myMine->openXY(myMine,0,0,1);
     printf("\n open: \n");
     myMine->showOpen(myMine);
     printf("\n test: \n");

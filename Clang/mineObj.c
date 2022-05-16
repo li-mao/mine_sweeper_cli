@@ -96,7 +96,6 @@ char cellCountRound(mineObj* self, int x, int y){
         count += y-1 >= 0 ?      (self->mineMap + self->y * (x+1) + y-1)->inner == 'M' : 0;
         count +=                 (self->mineMap + self->y * (x+1) + y)->inner == 'M';
         count += y+1 < self->y ? (self->mineMap + self->y * (x+1) + y+1)->inner == 'M': 0;
-
     }
 
     sprintf(countChar, "%d" , count);
@@ -113,12 +112,6 @@ void cellHint(mineObj* self){
         }
     }
 }
-
-//void openRound(mineObj* self, int x, int y){
-//
-//}
-
-
 
 /**
  * @brief 展示底层地图
@@ -179,8 +172,51 @@ void showTest(mineObj* self){
     }
 }
 
-void openXY(mineObj* self, int x, int y){
-    (self->mineMap + (self->y * x + y))->outer = 'O';
+void openXY(mineObj* self, int x, int y, int manual){
+    if(manual){
+        if( (self->mineMap + (self->y * x + y))->outer != 'O' ) {
+            (self->mineMap + (self->y * x + y))->outer = 'O';
+        }
+    }else{
+        if( (self->mineMap + (self->y * x + y))->inner == '0' ) {
+            (self->mineMap + (self->y * x + y))->outer = 'O';
+        }
+    }
+
+    if((self->mineMap + (self->y * x + y))->inner == '0'){
+        if(x-1 >= 0){
+            if((y-1 >=0) && (self->mineMap + (self->y * (x-1) + y-1))->outer != 'O') {
+                self->openXY(self, x-1, y-1, 0);
+            }
+            if((self->mineMap + (self->y * (x-1) + y))->outer != 'O'){
+                self->openXY(self, x-1, y, 0);
+            }
+            if( y+1 < self->y && (self->mineMap + (self->y * (x-1) + y+1))->outer != 'O') {
+                self->openXY(self, x-1, y+1, 0);
+            }
+        }
+
+        if(y-1 >= 0 && (self->mineMap + (self->y * (x) + y-1))->outer != 'O'){
+            self->openXY(self, x, y-1, 0);
+        }
+        if(y+1 < self->y && (self->mineMap + (self->y * (x) + y+1))->outer != 'O'){
+            self->openXY(self, x, y+1, 0);
+        }
+
+        if(x+1 < self->x && (self->mineMap + (self->y * (x+1) + y-1))->outer != 'O'){
+            if(y-1 >= 0){
+                self->openXY(self, x+1, y-1, 0);
+            }
+            if ((self->mineMap + (self->y * (x+1) + y))->outer != 'O') {
+                self->openXY(self, x+1, y, 0);
+            }
+            if(y+1 < self->y && (self->mineMap + (self->y * (x+1) + y+1))->outer != 'O'){
+                self->openXY(self, x+1, y+1, 0);
+            }
+        }
+    }
+
+    return;
 }
 
 
